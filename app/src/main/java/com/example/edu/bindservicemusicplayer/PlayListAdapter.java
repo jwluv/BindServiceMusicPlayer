@@ -40,7 +40,7 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.MyView
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         HashMap<String,Object> hashMap = arrayList.get(i);
         myViewHolder.textViewTitle.setText((String)hashMap.get("title"));
-        myViewHolder.textViewDetail.setText((String)hashMap.get("detail"));
+        myViewHolder.textViewDetail.setText((String)hashMap.get("artist"));
         myViewHolder.itemImage.setImageResource((int) hashMap.get("image"));
 
 //        myViewHolder.itemImage.setOnClickListener(new View.OnClickListener() {
@@ -77,14 +77,9 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.MyView
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            HashMap<String,Object> hashMap = arrayList.get(position);
 
-
-//            removeItem(position);
-//            Log.d("ViewHolder Click", position+", "+getItemId());
+            musicPlayer.play(position);
         }
-
-
     }
 }
 

@@ -4,6 +4,9 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.Resources;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
@@ -15,6 +18,7 @@ public class MyMusicService extends Service {
     int[] music_list = {R.raw.media_1, R.raw.media_2, R.raw.media_3, R.raw.media_4, R.raw.media_5};
     String[] str_music_list = {"media_1.mp3", "media_2.mp3", "media_3.mp3", "media_4.mp3", "media_5.mp3"};
     int music_list_position = 0;
+    String title = "", artist = "";
 
     private MyMusicService mServiceBinder;
     private ServiceConnection myConnection = new ServiceConnection() {
@@ -39,8 +43,14 @@ public class MyMusicService extends Service {
         }
     }
 
-    public void play() {
-        mPlayer = MediaPlayer.create(this, R.raw.media_1);
+    public void play(int playlist_position) {
+
+        setTitleArtist(playlist_position);
+        this.music_list_position = playlist_position;
+
+        if(mPlayer != null && mPlayer.isPlaying()) mPlayer.stop();
+
+        mPlayer = MediaPlayer.create(this, music_list[playlist_position]);
         mPlayer.setLooping(true);
         mPlayer.setVolume(80, 80);
         mPlayer.start();
@@ -53,6 +63,31 @@ public class MyMusicService extends Service {
 
     public String[] getPlayList() {
         return str_music_list;
+    }
+
+    public int getPlayingIndex() {
+        return music_list_position;
+    }
+
+    public void setTitleArtist(int index) {
+        Resources res = getResources();
+        String pkgName = getPackageName();
+
+        String str_id = "media_" + String.valueOf(index+1);
+        int identifier = res.getIdentifier(str_id, "raw", pkgName);
+        AssetFileDescriptor afd = res.openRawResourceFd(identifier);
+
+        MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
+        metaRetriever.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+        artist = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+        title = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+    public String getArtist() {
+        return artist;
     }
 
 }
