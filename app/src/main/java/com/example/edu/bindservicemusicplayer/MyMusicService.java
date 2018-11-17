@@ -56,6 +56,45 @@ public class MyMusicService extends Service {
         mPlayer.start();
     }
 
+    public void play_previous() {
+        if(this.music_list_position == 0)
+            this.music_list_position = music_list.length - 1;
+        else
+            this.music_list_position -= 1;
+
+        setTitleArtist(this.music_list_position);
+
+        if(mPlayer != null && mPlayer.isPlaying()) mPlayer.stop();
+
+        mPlayer = MediaPlayer.create(this, music_list[this.music_list_position]);
+        mPlayer.setLooping(true);
+        mPlayer.setVolume(80, 80);
+        mPlayer.start();
+    }
+
+    public void play_next() {
+        if(this.music_list_position == music_list.length - 1)
+            this.music_list_position = 0;
+        else
+            this.music_list_position += 1;
+
+        setTitleArtist(this.music_list_position);
+
+        if(mPlayer != null && mPlayer.isPlaying()) mPlayer.stop();
+
+        mPlayer = MediaPlayer.create(this, music_list[this.music_list_position]);
+        mPlayer.setLooping(true);
+        mPlayer.setVolume(80, 80);
+        mPlayer.start();
+    }
+    public void resume() {
+        mPlayer.start();
+    }
+
+    public void pause() {
+        mPlayer.pause();
+    }
+
     public void stop() {
         mPlayer.pause();
         mPlayer.seekTo(0);

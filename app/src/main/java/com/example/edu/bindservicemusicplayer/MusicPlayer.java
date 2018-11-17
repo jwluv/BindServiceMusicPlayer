@@ -20,11 +20,14 @@ import java.util.HashMap;
 
 public class MusicPlayer extends AppCompatActivity implements View.OnClickListener{
 
-    Button buttonPlay, buttonStop;
+    Button buttonPlayPause, buttonStop;
+    Button buttonPrevious, buttonNext;
     RecyclerView recyclerViewPlaylist;
     RecyclerView.LayoutManager layoutManager;
     PlayListAdapter playlistAdapter;
     String[] playList = null;
+
+    int play_state = 0; //0: No play, 1: Play, 2: Pause
 
     private MyMusicService mServiceBinder;
     private ServiceConnection myConnection = new ServiceConnection() {
@@ -43,13 +46,17 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         Intent intent = new Intent(this, MyMusicService.class);
         bindService(intent, myConnection, Context.BIND_AUTO_CREATE);
 
-        buttonPlay = findViewById(R.id.buttonPlay);
+        buttonPlayPause = findViewById(R.id.buttonPlayPause);
         buttonStop = findViewById(R.id.buttonStop);
+        buttonPrevious = findViewById(R.id.buttonPrevious);
+        buttonNext = findViewById(R.id.buttonNext);
 
         recyclerViewPlaylist = findViewById(R.id.recyclerViewPlaylist);
 
-        buttonPlay.setOnClickListener(this);
+        buttonPlayPause.setOnClickListener(this);
         buttonStop.setOnClickListener(this);
+        buttonPrevious.setOnClickListener(this);
+        buttonNext.setOnClickListener(this);
 
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<HashMap<String,Object>>();
         arrayList = getPlaylist();
@@ -60,25 +67,73 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
 
         recyclerViewPlaylist.setAdapter(playlistAdapter);
 
+        recyclerViewPlaylist.setNestedScrollingEnabled(true);
+
     }
 
     @Override
     public void onClick(View v) {
         switch(v.getId()){
-            case R.id.buttonPlay:
-                play(0);
+            case R.id.buttonPlayPause:
+               if(play_state==1)
+                    pause();
+                else
+                    play(0, play_state);
                 break;
             case R.id.buttonStop:
-                mServiceBinder.stop();
+                stop();
+                break;
+            case R.id.buttonPrevious:
+                play_previous();
+                break;
+            case R.id.buttonNext:
+                play_next();
                 break;
 
         }
     }
 
-    public void play(int index) {
-        mServiceBinder.play(index);
+    public void play(int index, int play_state) {
+
+        playlistAdapter.loadPlayingImage(index);
+        if(play_state == 0) {
+            this.play_state = 1;
+            mServiceBinder.play(index);
+        }
+        else if(play_state == 2) {
+            this.play_state = 1;
+            mServiceBinder.resume();
+        }
+        buttonPlayPause.setBackgroundResource(R.drawable.button_pause);
+
     }
 
+    public void pause() {
+        play_state = 2;
+        mServiceBinder.pause();
+        playlistAdapter.loadPauseImage(mServiceBinder.getPlayingIndex());
+        buttonPlayPause.setBackgroundResource(R.drawable.button_play);
+    }
+
+    public void stop() {
+        playlistAdapter.loadPlayingImage(-1);
+        play_state = 0;
+        mServiceBinder.stop();
+        buttonPlayPause.setBackgroundResource(R.drawable.button_play);
+    }
+
+    public void play_previous(){
+        play_state = 1;
+        mServiceBinder.play_previous();
+        playlistAdapter.loadPlayingImage(mServiceBinder.getPlayingIndex());
+        buttonPlayPause.setBackgroundResource(R.drawable.button_pause);
+    }
+    public void play_next(){
+        play_state = 1;
+        mServiceBinder.play_next();
+        playlistAdapter.loadPlayingImage(mServiceBinder.getPlayingIndex());
+        buttonPlayPause.setBackgroundResource(R.drawable.button_pause);
+    }
     public ArrayList<HashMap<String,Object>> getPlaylist() {
         ArrayList<HashMap<String,Object>> arrayList = new ArrayList<HashMap<String,Object>>();
         //String[] play_list = mServiceBinder.getPlayList();
@@ -101,14 +156,12 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
 
             HashMap<String,Object> hashMap = new HashMap<String,Object>();
             hashMap.put("artist", artist);
-            hashMap.put("image", R.drawable.images);
+            hashMap.put("image", R.drawable.not_playing);
             hashMap.put("title", title);
             arrayList.add(hashMap);
         }
         return arrayList;
     }
 
-    public void getPlayingTitle() {
 
-    }
 }

@@ -2,6 +2,7 @@ package com.example.edu.bindservicemusicplayer;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent intent = new Intent(this, MyMusicService.class);
+        bindService(intent, myConnection, Context.BIND_AUTO_CREATE);
+
         buttonMusicPlayer = findViewById(R.id.buttonMusicPlayer);
         buttonMusicPlayer.setOnClickListener(this);
 
@@ -59,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void displayMusicTitle() {
 
         if(mServiceBinder != null)
-        if(mServiceBinder.getTitle() != null && mServiceBinder.getArtist() != null)
-            textViewMusicPlaying.setText(mServiceBinder.getTitle() + " by " + mServiceBinder.getArtist() + "is playing...");
+        if(mServiceBinder.getTitle() != "" || mServiceBinder.getArtist() != "")
+            textViewMusicPlaying.setText(mServiceBinder.getTitle() + " by " + mServiceBinder.getArtist() + "\nis playing...");
     }
 }
