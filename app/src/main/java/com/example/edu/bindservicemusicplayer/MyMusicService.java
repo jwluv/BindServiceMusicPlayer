@@ -37,6 +37,11 @@ public class MyMusicService extends Service {
         return new MyBinder();
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_REDELIVER_INTENT;
+    }
+
     public class MyBinder extends Binder {
         MyMusicService getService() {
             return MyMusicService.this;

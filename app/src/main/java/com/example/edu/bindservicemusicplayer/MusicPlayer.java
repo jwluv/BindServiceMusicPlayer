@@ -43,6 +43,8 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player);
 
+        startService(new Intent(this, MyMusicService.class));
+
         Intent intent = new Intent(this, MyMusicService.class);
         bindService(intent, myConnection, Context.BIND_AUTO_CREATE);
 
