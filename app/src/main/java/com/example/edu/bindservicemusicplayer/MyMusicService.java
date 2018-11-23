@@ -39,7 +39,7 @@ public class MyMusicService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_REDELIVER_INTENT;
+        return START_STICKY;
     }
 
     public class MyBinder extends Binder {
@@ -134,4 +134,9 @@ public class MyMusicService extends Service {
         return artist;
     }
 
+    public boolean isPlaying() {
+        if(mPlayer != null && mPlayer.isPlaying())
+            return true;
+        return false;
+    }
 }

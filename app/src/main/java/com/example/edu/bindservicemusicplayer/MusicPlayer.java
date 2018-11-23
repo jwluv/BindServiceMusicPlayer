@@ -1,5 +1,7 @@
 package com.example.edu.bindservicemusicplayer;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -8,10 +10,12 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.media.MediaMetadataRetriever;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -91,6 +95,64 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
             case R.id.buttonNext:
                 play_next();
                 break;
+
+        }
+    }
+
+    private void doBindService() {
+        Intent intent = new Intent(this, MyMusicService.class);
+        bindService(intent, myConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void doUnBindService() {
+        if (mServiceBinder != null) {
+//            mIsPlaying = mServiceBinder.isPlaying();
+            unbindService(myConnection);
+//            myServiceBinder = null;
+        }
+    }
+
+    private void doReBindService() {
+        if (mServiceBinder != null) {
+//            mIsPlaying = mServiceBinder.isPlaying();
+            unbindService(myConnection);
+//            myServiceBinder = null;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d("activity", "onResume");
+        super.onResume();
+        if (mServiceBinder == null) {
+            // 서비스에 바인드
+            doBindService();
+//            mIsPlaying = myServiceBinder.isPlaying();
+        }
+//        startService(new Intent(getApplicationContext(), BackgroundMusicWithBindServiceService.class));
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("activity", "onPause");
+        super.onPause();
+
+        doUnBindService();
+
+        if(mServiceBinder != null) {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.drawable.musicplay);
+            builder.setContentTitle("My Music Play, Click Me!");
+            builder.setContentText("Hi, This is My Music Play");
+            Intent notificationIntent = new Intent(this, MusicPlayer.class);
+            PendingIntent contentIntent =
+                    PendingIntent.getActivity(this, 0,
+                            notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(contentIntent);
+// Add as notification
+            NotificationManager manager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.notify(0, builder.build());
 
         }
     }
