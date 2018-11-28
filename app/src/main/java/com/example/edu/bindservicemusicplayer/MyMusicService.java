@@ -48,6 +48,10 @@ public class MyMusicService extends Service {
         }
     }
 
+    public void setVolume(int volume) {
+        mPlayer.setVolume(volume, volume);
+    }
+
     public void play(int playlist_position) {
 
         setTitleArtist(playlist_position);

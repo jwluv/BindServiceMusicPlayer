@@ -11,14 +11,12 @@
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="945dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="13dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonPrevious"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -61,21 +59,45 @@
         android:id="@+id/buttonStop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="62dp"
-        android:layout_marginRight="62dp"
         android:layout_marginBottom="6dp"
         android:background="@drawable/button_stop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonNext" />
+        app:layout_constraintStart_toStartOf="@+id/seekBarVolume" />
 
     <Button
         android:id="@+id/buttonNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="121dp"
-        android:layout_marginRight="121dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginRight="9dp"
         android:layout_marginBottom="6dp"
         android:background="@drawable/button_next"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/seekBarVolume" />
+
+    <SeekBar
+        android:id="@+id/seekBarVolume"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginEnd="62dp"
+        android:layout_marginRight="62dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewVolume"
+        app:layout_constraintEnd_toEndOf="@+id/textViewVolume"
+        app:layout_constraintStart_toEndOf="@+id/buttonPlayPause"
+        app:layout_constraintTop_toTopOf="@+id/textViewVolume" />
+
+    <TextView
+        android:id="@+id/textViewVolume"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="38dp"
+        android:text="volume"
+        app:layout_constraintBottom_toTopOf="@+id/buttonNext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
 </android.support.constraint.ConstraintLayout>
